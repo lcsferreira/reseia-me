@@ -1,0 +1,13 @@
+.wrapper-class {
+  padding: 1rem;
+  border: 1px solid #565353;
+  border-radius: 1rem;
+}
+.editor-class {
+  padding: 1rem;
+  max-height: 70vh;
+}
+.toolbar-class {
+  /* border: 1px solid #ccc; */
+  color: #565353;
+}

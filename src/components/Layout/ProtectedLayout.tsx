@@ -76,7 +76,7 @@ const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({
               marginLeft: 2,
             }}
           >
-            <img src="logo.png" alt="Logo" height={40} />
+            <img src="/logo.png" alt="Logo" height={40} />
           </Box>
           <Box sx={{ display: "flex", justifyContent: "center", flexGrow: 1 }}>
             <Box
@@ -117,7 +117,7 @@ const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({
               p: 2,
             }}
           >
-            <img src="logo.png" alt="Logo" height={40} />
+            <img src="/logo.png" alt="Logo" height={40} />
           </Box>
           <Divider />
           <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>

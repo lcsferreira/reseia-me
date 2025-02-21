@@ -11,6 +11,16 @@ export const getProducts = async (): Promise<Product[]> => {
   return response.data.MockedProductsData;
 };
 
+export const getProductById = async (id: number): Promise<Product> => {
+  const product = MockedProductsData.find((product) => product.id === id);
+
+  mock.onGet(`/products/${id}`).reply(200, {
+    product,
+  });
+  const response = await axios.get(`/products/${id}`);
+  return response.data.product;
+};
+
 // export const getProducts = async (): Promise<Product[]> => {
 //   const mock = new MockAdapter(axios);
 //   mock.onGet("/products").reply(200, [

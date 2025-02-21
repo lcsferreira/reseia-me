@@ -16,9 +16,11 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "axios": "^1.7.9",
+    "draft-js": "^0.11.7",
     "framer-motion": "^12.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-draft-wysiwyg": "^1.15.0",
     "react-router-dom": "^7.2.0",
     "react-scripts": "5.0.1",
     "recharts": "^2.15.1",
@@ -50,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-draft-wysiwyg": "^1.13.8",
     "axios-mock-adapter": "^2.1.0"
   }
 }
