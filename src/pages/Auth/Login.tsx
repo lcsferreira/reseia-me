@@ -8,25 +8,74 @@ import {
   Button,
   Link,
   useMediaQuery,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
-  const { login } = useAuth();
-  const navigator = useNavigate();
+  const { login, register, resetPassword, loading, error } = useAuth();
+  const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
   const [isForgot, setIsForgot] = useState(false);
 
-  const handleLogin = () => {
-    login();
-    navigator("/"); // Redireciona para a rota inicial
-  };
+  // Form states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
 
   const isMobile = useMediaQuery("(max-width: 600px)");
 
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setFormError("Por favor, preencha todos os campos");
+      return;
+    }
+
+    setFormError(null);
+    await login(email, password);
+    navigate("/"); // Redireciona para a rota inicial apenas após o login bem-sucedido
+  };
+
+  const handleRegister = async () => {
+    if (!name || !email || !password || !confirmPassword) {
+      setFormError("Por favor, preencha todos os campos");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setFormError("As senhas não conferem");
+      return;
+    }
+
+    if (password.length < 6) {
+      setFormError("A senha deve ter pelo menos 6 caracteres");
+      return;
+    }
+
+    setFormError(null);
+    await register(name, email, password);
+    navigate("/"); // Redireciona após o registro bem-sucedido
+  };
+
+  const handleResetPassword = async () => {
+    if (!email) {
+      setFormError("Por favor, informe seu e-mail");
+      return;
+    }
+
+    setFormError(null);
+    await resetPassword(email);
+    setIsForgot(false); // Volta para a tela de login
+  };
+
   const handleToggle = (type: "register" | "forgot" | "login") => {
+    setFormError(null); // Limpa erros ao mudar de tela
+
     if (type === "register") {
       setIsRegister(true);
       setIsForgot(false);
@@ -159,35 +208,87 @@ export const Login = () => {
                 : "Faça login para continuar"}
             </Typography>
 
+            {/* Exibição de erros */}
+            {(error || formError) && (
+              <Alert severity="error" sx={{ my: 2 }}>
+                {error || formError}
+              </Alert>
+            )}
+
             <Box component="form" sx={{ mt: 2 }}>
+              {/* Campo Nome (apenas para registro) */}
+              {isRegister && (
+                <TextField
+                  fullWidth
+                  label="Nome"
+                  margin="normal"
+                  variant="outlined"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              )}
+
+              {/* Campo Email (para todos) */}
               <TextField
                 fullWidth
                 label="Email"
+                type="email"
                 margin="normal"
                 variant="outlined"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
+
               {!isForgot && (
-                <Box sx={{ mt: 2 }}>
-                  <Link
-                    onClick={() => handleToggle("forgot")}
-                    sx={{
-                      display: "block",
-                      width: "fit-content",
-                      justifySelf: "end",
-                      ":hover": { color: "secondary.light", cursor: "pointer" },
-                    }}
-                    color="secondary"
-                  >
-                    Esqueci minha senha
-                  </Link>
-                  <TextField
-                    fullWidth
-                    label="Senha"
-                    margin="normal"
-                    type="password"
-                    variant="outlined"
-                  />
-                </Box>
+                <>
+                  <Box sx={{ mt: 2 }}>
+                    {!isRegister && (
+                      <Link
+                        onClick={() => handleToggle("forgot")}
+                        sx={{
+                          display: "block",
+                          width: "fit-content",
+                          justifySelf: "end",
+                          ":hover": {
+                            color: "secondary.light",
+                            cursor: "pointer",
+                          },
+                        }}
+                        color="secondary"
+                      >
+                        Esqueci minha senha
+                      </Link>
+                    )}
+
+                    {/* Campo Senha */}
+                    <TextField
+                      fullWidth
+                      label="Senha"
+                      margin="normal"
+                      type="password"
+                      variant="outlined"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+
+                    {/* Campo Confirmar Senha (apenas para registro) */}
+                    {isRegister && (
+                      <TextField
+                        fullWidth
+                        label="Confirmar Senha"
+                        margin="normal"
+                        type="password"
+                        variant="outlined"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                      />
+                    )}
+                  </Box>
+                </>
               )}
 
               <Button
@@ -195,13 +296,24 @@ export const Login = () => {
                 variant="contained"
                 color="secondary"
                 sx={{ mt: 2 }}
-                onClick={handleLogin}
+                onClick={
+                  isRegister
+                    ? handleRegister
+                    : isForgot
+                    ? handleResetPassword
+                    : handleLogin
+                }
+                disabled={loading}
               >
-                {isRegister
-                  ? "Cadastrar"
-                  : isForgot
-                  ? "Recuperar Senha"
-                  : "Entrar"}
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : isRegister ? (
+                  "Cadastrar"
+                ) : isForgot ? (
+                  "Recuperar Senha"
+                ) : (
+                  "Entrar"
+                )}
               </Button>
             </Box>
 
@@ -210,6 +322,7 @@ export const Login = () => {
                 onClick={() => handleToggle(isRegister ? "login" : "register")}
                 sx={{ textTransform: "none" }}
                 color="secondary"
+                disabled={loading}
               >
                 {isRegister
                   ? "Já tem uma conta? Entrar"
