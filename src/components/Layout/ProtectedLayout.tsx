@@ -26,6 +26,7 @@ import {
   Logout,
   Menu,
   Store,
+  Settings,
 } from "@mui/icons-material";
 import { Outlet, useNavigate } from "react-router-dom";
 
@@ -54,6 +55,7 @@ const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({
     { name: "Dashboard", icon: <Dashboard />, path: "/" },
     { name: "Produtos", icon: <Inventory2 />, path: "/products" },
     { name: "Lojas", icon: <Store />, path: "/stores" },
+    { name: "Configurações", icon: <Settings />, path: "/settings" },
     { name: "Perfil", icon: <AccountBox />, path: "/profile" },
   ];
 

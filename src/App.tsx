@@ -6,6 +6,7 @@ import {
   Route,
 } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { StoreProvider } from "./contexts/StoreContext";
 import { Register } from "./pages/Auth/Register";
 import PrivateRoute from "./components/Auth/ProtectedRoutes";
 import { Login } from "./pages/Auth/Login";
@@ -14,6 +15,7 @@ import ProtectedLayout from "./components/Layout/ProtectedLayout";
 import { darkTheme, lightTheme } from "./themes/CustomTheme";
 import { ProductsList } from "./pages/Products/ProductsList";
 import { ProductDetail } from "./pages/Products/ProductDetail";
+import { Settings } from "./pages/Settings/Settings";
 import { useState } from "react";
 
 const App: React.FC = () => {
@@ -25,31 +27,34 @@ const App: React.FC = () => {
 
   return (
     <AuthProvider>
-      <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-        <Router>
-          <CssBaseline />
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route element={<PrivateRoute />}>
-              <Route
-                element={
-                  <ProtectedLayout
-                    darkMode={darkMode}
-                    toggleTheme={toggleTheme}
-                  />
-                }
-              >
-                <Route path="/" element={<Home />} />
-                <Route path="/products" element={<ProductsList />} />
-                <Route path="/products/:id" element={<ProductDetail />} />
-                <Route path="*" element={<Navigate to="/" />} />
+      <StoreProvider>
+        <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+          <Router>
+            <CssBaseline />
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route element={<PrivateRoute />}>
+                <Route
+                  element={
+                    <ProtectedLayout
+                      darkMode={darkMode}
+                      toggleTheme={toggleTheme}
+                    />
+                  }
+                >
+                  <Route path="/" element={<Home />} />
+                  <Route path="/products" element={<ProductsList />} />
+                  <Route path="/products/:id" element={<ProductDetail />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="*" element={<Navigate to="/" />} />
+                </Route>
               </Route>
-            </Route>
-            <Route path="*" element={<Navigate to="/login" />} />
-          </Routes>
-        </Router>
-      </ThemeProvider>
+              <Route path="*" element={<Navigate to="/login" />} />
+            </Routes>
+          </Router>
+        </ThemeProvider>
+      </StoreProvider>
     </AuthProvider>
   );
 };
