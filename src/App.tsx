@@ -16,6 +16,7 @@ import { darkTheme, lightTheme } from "./themes/CustomTheme";
 import { ProductsList } from "./pages/Products/ProductsList";
 import { ProductDetail } from "./pages/Products/ProductDetail";
 import { Settings } from "./pages/Settings/Settings";
+import Profile from "./pages/Profile/Profile";
 import { useState } from "react";
 
 const App: React.FC = () => {
@@ -47,6 +48,7 @@ const App: React.FC = () => {
                   <Route path="/products" element={<ProductsList />} />
                   <Route path="/products/:id" element={<ProductDetail />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/profile" element={<Profile />} />
                   <Route path="*" element={<Navigate to="/" />} />
                 </Route>
               </Route>
